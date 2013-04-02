@@ -16,20 +16,41 @@ var satCheckbox = "#custom_list-51512492726cc-5";
 var commuterAmountOfDays = "#text-515525726e966";
 var commuterFeesSubtotal = "#text-5155132f62cc6";
 // Overnight form elements
+var overnightAttending = "input:radio[name=custom_list-51552d7af14b2]:checked";
 
+// Partial fields
+var overnightFirstPartialSessionArrival = "#custom_list-51512d65f3ccd";
+var overnightFirstPartialSessionDeparture = "#custom_list-51512e25e75c3";
+var overnightSecondPartialSessionArrival = "#custom_list-51555bbac6ab6";
+var overnightSecondPartialSessionDeparture = "#custom_list-51555a6ed6924";
+
+// Overnight choices
+var overnightFirstChoiceSelect = "#custom_list-5151316b82122";
+var overnightFirstChoiceFeesSubtotal = "#text-5155c5a3c3e6f";
+var overnightSecondChoiceSelect = "#custom_list-5155391ed978e";
+var overnightSecondChoiceFeesSubtotal = "#text-5155c5a7b1cd9";
+
+// Roomate preferences
+var overnightRoomatePreferences = "#custom_list-515137f3e9e63";
 
 // Final fees and payment elements
 var firstChoiceSubTotal = "#text-5158cf384d951";
 var secondChoiceSubTotal = "#text-5158cf3c9326f";
 var totalFeesFromAbove = "#text-515621f626b6e";
 var earlyDiscountRadio = "input:radio[name=custom_list-5156340d5ee07]:checked";
-// TODO: set the earlyDiscountRadio based on Date()
+// TODO: set the earlyDiscountRadio based on Date() ?
+
+// Donation and discount
+var optionalDonation = "#text-515621fd28e1c";
+var financialAid = "#text-5156220059f2d";
+
+// Total and subtotal
 var subTotalFees = "#text-515621f92963c";
 var totalFeesDue = "#text-5156220324787";
 
 //Payment section
 amountEnclosed = "#text-515622061f15c";
-balanceDueOnArrival = "#text-51563412d9e9e"
+balanceDueOnArrival = "#text-51563412d9e9e";
 
 /* Check to see if a checkbox is checked
  * jQuery("#checkbox-id").is(":checked")
