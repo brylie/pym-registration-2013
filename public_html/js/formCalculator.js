@@ -12,7 +12,14 @@ var wedCheckbox = "#custom_list-51512492726cc-2";
 var thuCheckbox = "#custom_list-51512492726cc-3";
 var friCheckbox = "#custom_list-51512492726cc-4";
 var satCheckbox = "#custom_list-51512492726cc-5";
-
+var days = [
+       monCheckbox
+       ,tueCheckbox
+       ,wedCheckbox
+       ,thuCheckbox
+       ,friCheckbox
+       ,satCheckbox
+   ];
 var commuterAmountOfDays = "#text-515525726e966";
 var commuterFeesSubtotal = "#text-5155132f62cc6";
 // Overnight form elements
@@ -52,21 +59,30 @@ var totalFeesDue = "#text-5156220324787";
 amountEnclosed = "#text-515622061f15c";
 balanceDueOnArrival = "#text-51563412d9e9e";
 
-/* Check to see if a checkbox is checked
- * jQuery("#checkbox-id").is(":checked")
- */
+var countCommuterDays = function() {
+    var daysChecked = 0;
 
-var countCommuterDays = function() {    
-    // create an array of true/false values for each day
-      // true is attending
-      // false is not attending
+    for (i=0;i < days.length;i++) {
+      if (jQuery(days[i]).is(":checked")) {
+        daysChecked += 1;
+      }
+    }
     
-    // count the true days
-    
-    // return the count
+    return daysChecked;
 };
 
 var updateCommuterAmountOfDaysField = function() {
-    numberOfDays = countCommuterDays();
+    var numberOfDays = countCommuterDays();
     // update the form element
+    jQuery(commuterAmountOfDays).val(numberOfDays);
+    console.log(numberOfDays);
 };
+
+var attachEvents = function() {
+    // Day checkbox events 
+    for (i=0;i < days.length;i++) {
+      jQuery(days[i]).click(updateCommuterAmountOfDaysField);
+     }
+};
+
+jQuery(document).load(attachEvents());
