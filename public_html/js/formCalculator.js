@@ -55,3 +55,18 @@ balanceDueOnArrival = "#text-51563412d9e9e";
 /* Check to see if a checkbox is checked
  * jQuery("#checkbox-id").is(":checked")
  */
+
+var countCommuterDays = function() {    
+    // create an array of true/false values for each day
+      // true is attending
+      // false is not attending
+    
+    // count the true days
+    
+    // return the count
+};
+
+var updateCommuterAmountOfDaysField = function() {
+    numberOfDays = countCommuterDays();
+    // update the form element
+};
