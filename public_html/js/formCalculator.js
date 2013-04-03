@@ -3,10 +3,10 @@ var date = new Date(); // Date used for discount calculation
 
 var commuterPrices = [0 //null
     ,0 //null
-    ,200 // 0 - 5
-    ,300 // 6 - 12
-    ,400 // 13 - 25
-    ,500 // 26 +
+    ,0 // 0 - 5
+    ,30 // 6 - 12
+    ,45 // 13 - 25
+    ,75 // 26 +
 ];
 
 // Form elements
