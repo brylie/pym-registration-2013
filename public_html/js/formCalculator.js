@@ -1,5 +1,13 @@
 // Static variables
-date = new Date(); // Date used for discount calculation
+var date = new Date(); // Date used for discount calculation
+
+var commuterPrices = [0 //null
+    ,0 //null
+    ,200 // 0 - 5
+    ,300 // 6 - 12
+    ,400 // 13 - 25
+    ,500 // 26 +
+];
 
 // Form elements
 var ageGroupList = "#custom_list-5153b344f2fa7";
@@ -21,7 +29,7 @@ var days = [
        ,satCheckbox
    ];
 var commuterAmountOfDays = "#text-515525726e966";
-var commuterFeesSubtotal = "#text-5155132f62cc6";
+var commuterFeesSubTotal = "#text-5155132f62cc6";
 // Overnight form elements
 var overnightAttending = "input:radio[name=custom_list-51552d7af14b2]:checked";
 
@@ -75,7 +83,18 @@ var updateCommuterAmountOfDaysField = function() {
     var numberOfDays = countCommuterDays();
     // update the form element
     jQuery(commuterAmountOfDays).val(numberOfDays);
-    console.log(numberOfDays);
+    jQuery(commuterAmountOfDays).change()
+};
+
+var calculateCommuterFeesSubTotal = function() {
+    var ageGroup = parseInt(jQuery(ageGroupList).val());
+    var numberOfDays = parseInt(countCommuterDays());
+    var subTotal = commuterPrices[ageGroup] * numberOfDays;
+    return subTotal;
+};
+var updateCommuterFeesSubTotalField = function() {
+    var subTotal = calculateCommuterFeesSubTotal();
+    jQuery(commuterFeesSubTotal).val(subTotal);
 };
 
 var attachEvents = function() {
@@ -83,6 +102,8 @@ var attachEvents = function() {
     for (i=0;i < days.length;i++) {
       jQuery(days[i]).click(updateCommuterAmountOfDaysField);
      }
+     // Commuter SubTotal field update triggers
+     jQuery(commuterAmountOfDays).change(updateCommuterFeesSubTotalField);
 };
 
 jQuery(document).load(attachEvents());
