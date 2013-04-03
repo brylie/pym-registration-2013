@@ -83,7 +83,7 @@ var updateCommuterAmountOfDaysField = function() {
     var numberOfDays = countCommuterDays();
     // update the form element
     jQuery(commuterAmountOfDays).val(numberOfDays);
-    jQuery(commuterAmountOfDays).change()
+    jQuery(commuterAmountOfDays).change();
 };
 
 var calculateCommuterFeesSubTotal = function() {
