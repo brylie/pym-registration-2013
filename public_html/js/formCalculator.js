@@ -124,12 +124,12 @@ var calculatePartialSessionLength = function() {
     // add one to the day of departure to match the day of the week
     // this is to offset the index of the day in the selection list
     var dayOfDeparture = parseInt(jQuery(overnightPartialSessionDeparture).val()) + 1; 
-    if (dayOfDeparture > dayOfArrival) {
+    if (dayOfDeparture > dayOfArrival) { // make sure departing after arrival
         var lengthOfStay = dayOfDeparture - dayOfArrival;
-    } else {
+    } else { // zero is catch all
         var lengthOfStay = 0;
     }
-    if (lengthOfStay > 0) {
+    if (lengthOfStay > 0) { // make sure they are staying
         return lengthOfStay;
     } else {
         return null;
