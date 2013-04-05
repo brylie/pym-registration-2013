@@ -1,7 +1,8 @@
 // Static variables
 var date = new Date(); // Date used for discount calculation
 
-var commuterPrices = [0 //null
+var commuterPrices = [
+    0 //null
     ,0 //null
     ,0 // 0 - 5
     ,30 // 6 - 12
@@ -34,10 +35,10 @@ var commuterFeesSubTotal = "#text-5155132f62cc6";
 var overnightAttending = "input:radio[name=custom_list-51552d7af14b2]:checked";
 
 // Partial fields
-var overnightFirstPartialSessionArrival = "#custom_list-51512d65f3ccd";
-var overnightFirstPartialSessionDeparture = "#custom_list-51512e25e75c3";
-var overnightSecondPartialSessionArrival = "#custom_list-51555bbac6ab6";
-var overnightSecondPartialSessionDeparture = "#custom_list-51555a6ed6924";
+var overnightPartialSessionArrival = "#custom_list-51512d65f3ccd";
+var overnightPartialSessionDeparture = "#custom_list-51512e25e75c3";
+var overnightPartialSessionAmountOfDays = "#text-5155020930b2e";
+
 
 // Overnight choices
 var overnightFirstChoiceSelect = "#custom_list-5151316b82122";
@@ -88,15 +89,46 @@ var updateCommuterAmountOfDaysField = function() {
 
 var calculateCommuterFeesSubTotal = function() {
     var ageGroup = parseInt(jQuery(ageGroupList).val());
-    var numberOfDays = parseInt(countCommuterDays());
+    var numberOfDays = parseInt(jQuery(commuterAmountOfDays).val());
     var subTotal = commuterPrices[ageGroup] * numberOfDays;
-    return subTotal;
+    if (subTotal > 0) {
+        return subTotal;
+    } else if (ageGroup <= 2) { // children 0 - 5 or no selection
+        return 0;
+    } 
+    else {
+        return null;
+    }
 };
 var updateCommuterFeesSubTotalField = function() {
     var subTotal = calculateCommuterFeesSubTotal();
     jQuery(commuterFeesSubTotal).val(subTotal);
 };
 
+var calculatePartialSessionLength = function() {
+    // type cast both values with parseInt() to perform subtraction later
+    // list index of day of arrival matches day of week
+    var dayOfArrival = parseInt(jQuery(overnightPartialSessionArrival).val());
+    // add one to the day of departure to match the day of the week
+    // this is to offset the index of the day in the selection list
+    var dayOfDeparture = parseInt(jQuery(overnightPartialSessionDeparture).val()) + 1; 
+    if (dayOfDeparture > dayOfArrival) {
+        var lengthOfStay = dayOfDeparture - dayOfArrival;
+    } else {
+        var lengthOfStay = 0;
+    }
+    if (lengthOfStay > 0) {
+        return lengthOfStay;
+    } else {
+        return null;
+    }
+};
+
+var updateAmountOfDaysField = function() {
+    var lengthOfStay = calculatePartialSessionLength();
+    console.log(lengthOfStay);
+    jQuery(overnightPartialSessionAmountOfDays).val(lengthOfStay);
+};
 var attachEvents = function() {
     // Day checkbox events 
     for (i=0;i < days.length;i++) {
@@ -104,6 +136,11 @@ var attachEvents = function() {
      }
      // Commuter SubTotal field update triggers
      jQuery(commuterAmountOfDays).change(updateCommuterFeesSubTotalField);
+     jQuery(ageGroupList).change(updateCommuterFeesSubTotalField);
+     
+     // Partial session event triggers
+     jQuery(overnightPartialSessionArrival).change(updateAmountOfDaysField);
+     jQuery(overnightPartialSessionDeparture).change(updateAmountOfDaysField);
 };
 
 jQuery(document).load(attachEvents());
