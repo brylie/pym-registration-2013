@@ -2,12 +2,24 @@
 var date = new Date(); // Date used for discount calculation
 
 var commuterPrices = [
-    0 //null
-    ,0 //null
+    0 // null
+    ,0 // null
     ,0 // 0 - 5
     ,30 // 6 - 12
     ,45 // 13 - 25
     ,75 // 26 +
+];
+var overnightAccommodationsPrices = [
+    0 // null
+    , 10 // Camping
+    , 20 // Floor space
+    , 30 // JYM floor space
+    , 40 // YAF floor space (< 25)
+    , 50 // YAF floor space (> 26)
+    , 60 // Dormitory bed
+    , 70 // Semi-private + shared bath
+    , 80 // Single + shared bath
+    , 90 // Semi-private + private bath
 ];
 
 // Form elements
