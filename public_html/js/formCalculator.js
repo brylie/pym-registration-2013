@@ -1,3 +1,4 @@
+/* jshint laxcomma: true */
 // Static variables
 var date = new Date(); // Date used for discount calculation
 
@@ -77,13 +78,13 @@ var subTotalFees = "#text-515621f92963c";
 var totalFeesDue = "#text-5156220324787";
 
 //Payment section
-amountEnclosed = "#text-515622061f15c";
-balanceDueOnArrival = "#text-51563412d9e9e";
+var amountEnclosed = "#text-515622061f15c";
+var balanceDueOnArrival = "#text-51563412d9e9e";
 
 var countCommuterDays = function() {
     var daysChecked = 0;
 
-    for (i=0;i < days.length;i++) {
+    for (var i=0;i < days.length;i++) {
       if (jQuery(days[i]).is(":checked")) {
         daysChecked += 1;
       }
@@ -100,8 +101,8 @@ var updateCommuterAmountOfDaysField = function() {
 };
 
 var calculateCommuterFeesSubTotal = function() {
-    var ageGroup = parseInt(jQuery(ageGroupList).val());
-    var numberOfDays = parseInt(jQuery(commuterAmountOfDays).val());
+    var ageGroup = parseInt(jQuery(ageGroupList).val(), 10);
+    var numberOfDays = parseInt(jQuery(commuterAmountOfDays).val(), 10);
     var subTotal = commuterPrices[ageGroup] * numberOfDays;
     if (subTotal > 0) {
         return subTotal;
@@ -118,16 +119,17 @@ var updateCommuterFeesSubTotalField = function() {
 };
 
 var calculatePartialSessionLength = function() {
+    var lengthOfStay;
     // type cast both values with parseInt() to perform subtraction later
     // list index of day of arrival matches day of week
-    var dayOfArrival = parseInt(jQuery(overnightPartialSessionArrival).val());
+    var dayOfArrival = parseInt(jQuery(overnightPartialSessionArrival).val(), 10);
     // add one to the day of departure to match the day of the week
     // this is to offset the index of the day in the selection list
-    var dayOfDeparture = parseInt(jQuery(overnightPartialSessionDeparture).val()) + 1; 
+    var dayOfDeparture = parseInt(jQuery(overnightPartialSessionDeparture).val(), 10) + 1; 
     if (dayOfDeparture > dayOfArrival) { // make sure departing after arrival
-        var lengthOfStay = dayOfDeparture - dayOfArrival;
+        lengthOfStay = dayOfDeparture - dayOfArrival;
     } else { // zero is catch all
-        var lengthOfStay = 0;
+        lengthOfStay = 0;
     }
     if (lengthOfStay > 0) { // make sure they are staying
         return lengthOfStay;
@@ -138,12 +140,11 @@ var calculatePartialSessionLength = function() {
 
 var updateAmountOfDaysField = function() {
     var lengthOfStay = calculatePartialSessionLength();
-    console.log(lengthOfStay);
     jQuery(overnightPartialSessionAmountOfDays).val(lengthOfStay);
 };
 var attachEvents = function() {
     // Day checkbox events 
-    for (i=0;i < days.length;i++) {
+    for (var i=0;i < days.length;i++) {
       jQuery(days[i]).click(updateCommuterAmountOfDaysField);
      }
      // Commuter SubTotal field update triggers
