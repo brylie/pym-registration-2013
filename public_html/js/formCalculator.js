@@ -158,7 +158,7 @@
             jQuery(overnightFirstChoiceSelect + " option[value=6]").hide();
             jQuery(overnightFirstChoiceSelect + " option[value=9]").hide();
             jQuery(overnightSecondChoiceSelect + " option[value=6]").hide();
-            jQuery(overnightSecondChoiceSelect + " option[value=9]").hide()
+            jQuery(overnightSecondChoiceSelect + " option[value=9]").hide();
         }
         return null;
     };
