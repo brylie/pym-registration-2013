@@ -147,6 +147,9 @@
 
     var modifyAccommodationsChoices = function() {
         // check whether overnight attending full or partial is selected
+        // Set the select values to zero (no choice)
+        jQuery(overnightFirstChoiceSelect).val("0");
+        jQuery(overnightSecondChoiceSelect).val("0");
         //if full, show options 6 and 9
         //if partial, hide options 6 and 9
         if (jQuery(overnightAttending).val() === "0") { // Full
