@@ -152,9 +152,13 @@
         if (jQuery(overnightAttending).val() === "0") { // Full
             jQuery(overnightFirstChoiceSelect + " option[value=6]").show();
             jQuery(overnightFirstChoiceSelect + " option[value=9]").show();
+            jQuery(overnightSecondChoiceSelect + " option[value=6]").show();
+            jQuery(overnightSecondChoiceSelect + " option[value=9]").show();
         } else if (jQuery(overnightAttending).val() === "1") { // Partial
             jQuery(overnightFirstChoiceSelect + " option[value=6]").hide();
             jQuery(overnightFirstChoiceSelect + " option[value=9]").hide();
+            jQuery(overnightSecondChoiceSelect + " option[value=6]").hide();
+            jQuery(overnightSecondChoiceSelect + " option[value=9]").hide()
         }
         return null;
     };
