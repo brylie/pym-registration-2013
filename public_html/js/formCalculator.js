@@ -150,18 +150,18 @@
         // Set the select values to zero (no choice)
         jQuery(overnightFirstChoiceSelect).val("0");
         jQuery(overnightSecondChoiceSelect).val("0");
-        //if full, show options 6 and 9
-        //if partial, hide options 6 and 9
+        //if full, show options 5 and 8
+        //if partial, hide options 5 and 8
         if (jQuery(overnightAttending).val() === "0") { // Full
-            jQuery(overnightFirstChoiceSelect + " option[value=6]").show();
-            jQuery(overnightFirstChoiceSelect + " option[value=9]").show();
-            jQuery(overnightSecondChoiceSelect + " option[value=6]").show();
-            jQuery(overnightSecondChoiceSelect + " option[value=9]").show();
+            jQuery(overnightFirstChoiceSelect + " option[value=5]").show();
+            jQuery(overnightFirstChoiceSelect + " option[value=8]").show();
+            jQuery(overnightSecondChoiceSelect + " option[value=5]").show();
+            jQuery(overnightSecondChoiceSelect + " option[value=8]").show();
         } else if (jQuery(overnightAttending).val() === "1") { // Partial
-            jQuery(overnightFirstChoiceSelect + " option[value=6]").hide();
-            jQuery(overnightFirstChoiceSelect + " option[value=9]").hide();
-            jQuery(overnightSecondChoiceSelect + " option[value=6]").hide();
-            jQuery(overnightSecondChoiceSelect + " option[value=9]").hide();
+            jQuery(overnightFirstChoiceSelect + " option[value=5]").hide();
+            jQuery(overnightFirstChoiceSelect + " option[value=8]").hide();
+            jQuery(overnightSecondChoiceSelect + " option[value=5]").hide();
+            jQuery(overnightSecondChoiceSelect + " option[value=8]").hide();
         }
         return null;
     };
