@@ -149,10 +149,10 @@
         // check whether overnight attending full or partial is selected
         //if full, show options 6 and 9
         //if partial, hide options 6 and 9
-        if (jQuery(overnightAttending).val() === "1") { // Full
+        if (jQuery(overnightAttending).val() === "0") { // Full
             jQuery(overnightFirstChoiceSelect + " option[value=6]").show();
             jQuery(overnightFirstChoiceSelect + " option[value=9]").show();
-        } else if (jQuery(overnightAttending).val() === "0") { // Partial
+        } else if (jQuery(overnightAttending).val() === "1") { // Partial
             jQuery(overnightFirstChoiceSelect + " option[value=6]").hide();
             jQuery(overnightFirstChoiceSelect + " option[value=9]").hide();
         }
@@ -172,8 +172,8 @@
          jQuery(overnightPartialSessionDeparture).change(updateAmountOfDaysField);
 
          // Overnight accommodations list modifier based on selection
-         jQuery(overnightAttendingFull).mouseup(modifyAccommodationsChoices);
-         jQuery(overnightAttendingPartial).mouseup(modifyAccommodationsChoices);
+         jQuery(overnightAttendingFull).click(modifyAccommodationsChoices);
+         jQuery(overnightAttendingPartial).click(modifyAccommodationsChoices);
     };
 
     jQuery(document).load(attachEvents());
