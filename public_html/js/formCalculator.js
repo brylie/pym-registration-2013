@@ -11,16 +11,56 @@
         ,75 // 26 +
     ];
     var overnightAccommodationsPrices = [
-        0 // null
-        , 10 // Camping
-        , 20 // Floor space
-        , 30 // JYM floor space
-        , 40 // YAF floor space (< 25)
-        , 50 // YAF floor space (> 26)
-        , 60 // Dormitory bed
-        , 70 // Semi-private + shared bath
-        , 80 // Single + shared bath
-        , 90 // Semi-private + private bath
+        // Organized by type of accommodation
+        // Prices ordered as [week, day 
+        [ //Camping
+            [0,0] // >= 0 && <= 5
+            , [125,30] // >= 6 && <= 12
+            , [200,45] // >= 13 && <= 25
+            , [350,75] // >= 26
+        ]
+        , [ // Floor Space
+            [0,0] // >= 0 && <= 5
+            , [180,40] // >= 6 && <= 12
+            , [300,60] // >= 13 && <= 25
+            , [425,90] // >= 26
+        ]
+        , [ // JYM
+            [null,null] // >= 0 && <= 5 Not applicable
+            , [null,null] // >= 6 && <= 12 Not applicable
+            , [300,60] // >= 13 && <= 25 (applicable)
+            , [null,null] // >= 26 Not applicable
+        ]
+        , [ // YAF
+            [null,null] // >= 0 && <= 5 Not applicable
+            , [null,null] // >= 6 && <= 12 Not applicable
+            , [300,60] // >= 13 && <= 25 (applicable)
+            , [425, 90] // >= 26 (applicable)
+        ]
+        , [ // Dormitory
+            [0,null] // >= 0 && <= 5
+            , [230,null] // >= 6 && <= 12
+            , [300,null] // >= 13 && <= 25
+            , [550,null] // >= 26
+        ]
+        , [ // Semi-private, shared bath
+            [0,0] // >= 0 && <= 5
+            , [340,70] // >= 6 && <= 12
+            , [670,140] // >= 13 && <= 25
+            , [670,140] // >= 26
+        ]
+        , [ // Single, shared bath
+            [950,200] // >= 0 && <= 5
+            , [950,200] // >= 6 && <= 12
+            , [950,200] // >= 13 && <= 25
+            , [950,200] // >= 26
+        ]
+        , [ // Semi-private, private bath
+            [0,null] // >= 0 && <= 5
+            , [500,null] // >= 6 && <= 12
+            , [750,null] // >= 13 && <= 25
+            , [750,null] // >= 26
+        ]
     ];
 
     // Form elements
