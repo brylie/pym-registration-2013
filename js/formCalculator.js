@@ -207,7 +207,7 @@
     };
     
     var updateRoommatePreferencesField = function() {
-        let firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
+        var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
         // Check if First Choice Accommodations is JYM (3) or YAF (4)
         if (firstChoiceAccommodations === 3) {
             jQuery(overnightRoommatePreferences).val("4");
@@ -216,6 +216,7 @@
         } else {
             jQuery(overnightRoommatePreferences).val("0");
         }
+        jQuery(overnightRoommatePreferences).change();
     };
     var attachEvents = function() {
         // Day checkbox events

@@ -1,4 +1,4 @@
-    /* jshint laxcomma: true */
+/* jshint laxcomma: true */
     // Static variables
     var date = new Date(); // Date used for discount calculation
 
@@ -12,7 +12,7 @@
     ];
     var overnightAccommodationsPrices = [
         // Organized by type of accommodation
-        // Prices ordered as [week, day 
+        // Prices ordered as [week, day
         [ //Camping
             [0,0] // >= 0 && <= 5
             , [125,30] // >= 6 && <= 12
@@ -102,7 +102,7 @@
     var overnightSecondChoiceFeesSubtotal = "#text-5155c5a7b1cd9";
 
     // Roomate preferences
-    var overnightRoomatePreferences = "#custom_list-515137f3e9e63";
+    var overnightRoommatePreferences = "#custom_list-515137f3e9e63";
 
     // Final fees and payment elements
     var firstChoiceSubTotal = "#text-5158cf384d951";
@@ -150,7 +150,7 @@
             return subTotal;
         } else if (ageGroup <= 2) { // children 0 - 5 or no selection
             return 0;
-        } 
+        }
         else {
             return null;
         }
@@ -167,7 +167,7 @@
         var dayOfArrival = parseInt(jQuery(overnightPartialSessionArrival).val(), 10);
         // add one to the day of departure to match the day of the week
         // this is to offset the index of the day in the selection list
-        var dayOfDeparture = parseInt(jQuery(overnightPartialSessionDeparture).val(), 10) + 1; 
+        var dayOfDeparture = parseInt(jQuery(overnightPartialSessionDeparture).val(), 10) + 1;
         if (dayOfDeparture > dayOfArrival) { // make sure departing after arrival
             lengthOfStay = dayOfDeparture - dayOfArrival;
         } else { // zero is catch all
@@ -205,8 +205,20 @@
         }
         return null;
     };
+    
+    var updateRoommatePreferencesField = function() {
+        let firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
+        // Check if First Choice Accommodations is JYM (3) or YAF (4)
+        if (firstChoiceAccommodations === 3) {
+            jQuery(overnightRoommatePreferences).val("4");
+        } else if (firstChoiceAccommodations === 4) {
+            jQuery(overnightRoommatePreferences).val("5");
+        } else {
+            jQuery(overnightRoommatePreferences).val("0");
+        }
+    };
     var attachEvents = function() {
-        // Day checkbox events 
+        // Day checkbox events
         for (var i=0;i < days.length;i++) {
           jQuery(days[i]).click(updateCommuterAmountOfDaysField);
          }
@@ -221,6 +233,11 @@
          // Overnight accommodations list modifier based on selection
          jQuery(overnightAttendingFull).click(modifyAccommodationsChoices);
          jQuery(overnightAttendingPartial).click(modifyAccommodationsChoices);
+         
+         // Roommate preferences auto-select
+         jQuery(overnightFirstChoiceSelect).click(updateRoommatePreferencesField);
+         jQuery(overnightAttendingFull).click(updateRoommatePreferencesField);
+         jQuery(overnightAttendingPartial).click(updateRoommatePreferencesField);
     };
 
     jQuery(document).load(attachEvents());
