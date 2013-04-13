@@ -210,11 +210,11 @@
         var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
         // Check if First Choice Accommodations is JYM (3) or YAF (4)
         if (firstChoiceAccommodations === 3) {
-            jQuery(overnightRoommatePreferences).val("4");
+            jQuery(overnightRoommatePreferences).val("4"); // JYM
         } else if (firstChoiceAccommodations === 4) {
-            jQuery(overnightRoommatePreferences).val("5");
+            jQuery(overnightRoommatePreferences).val("5"); // YAF
         } else {
-            jQuery(overnightRoommatePreferences).val("0");
+            jQuery(overnightRoommatePreferences).val("1"); // Blank
         }
         jQuery(overnightRoommatePreferences).change();
     };
