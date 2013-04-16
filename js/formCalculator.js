@@ -208,13 +208,18 @@
     
     var updateRoommatePreferencesField = function() {
         var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
+        var overnightRoommatePreferencesField = jQuery(overnightRoommatePreferences);
         // Check if First Choice Accommodations is JYM (3) or YAF (4)
-        if (firstChoiceAccommodations === 3) {
-            jQuery(overnightRoommatePreferences).val("4"); // JYM
-        } else if (firstChoiceAccommodations === 4) {
-            jQuery(overnightRoommatePreferences).val("5"); // YAF
-        } else {
-            jQuery(overnightRoommatePreferences).val("1"); // Blank
+        if (firstChoiceAccommodations === 3) { // JYM
+            overnightRoommatePreferencesField.val("4");
+        } else if (firstChoiceAccommodations === 4) { // YAF
+            overnightRoommatePreferencesField.val("5");
+        } else if (firstChoiceAccommodations === 1) { // Camping
+            overnightRoommatePreferencesField.val("2");
+        } else if (firstChoiceAccommodations === 7) { // Single - Shared Bath
+            overnightRoommatePreferencesField.val("3");
+	} else {
+            overnightRoommatePreferencesField.val("1"); // Blank
         }
         jQuery(overnightRoommatePreferences).change();
     };
