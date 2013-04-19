@@ -114,6 +114,9 @@
     var balanceDueOnArrival = "#text-51563412d9e9e";
     // End of initial variables
     // Begin form functions
+/*
+ * Commuter section
+ */
     var countCommuterDays = function() {
       /* 
        * count the number of commuter days checked
@@ -214,19 +217,44 @@
         var lengthOfStay = calculatePartialSessionLength();
         jQuery(overnightPartialSessionAmountOfDays).val(lengthOfStay);
     };
+/*
+ * Overnight section
+ */
+    var determineOvernightAttendingChoice = function() {
+      /*
+       * Get overnight attending choice, 
+       * convert to meaningful text
+       * return lowercase 'full' or 'partial'
+       */
+      var attendingChoice = jQuery(overnightAttending).val();
+      var attendingText;
+      switch(attendingChoice) {
+	case "0":
+	  attendingText = "full";
+	  break;
+	case "1":
+	  attendingText = "partial";
+	  break;
+	default:
+	  attendingText = undefined;
+      };
+      return attendingText;
+    };
     var modifyAccommodationsChoices = function() {
         // check whether overnight attending full or partial is selected
-        // Set the select values to zero (no choice)
+        var overnightAttendingChoice = determineOvernightAttendingChoice();
+        // Set the accommodation select values to zero (no choice)
+	// to remove any active selection, preventing invalid choice
         jQuery(overnightFirstChoiceSelect).val("0");
         jQuery(overnightSecondChoiceSelect).val("0");
-        //if full, show options 5 and 8
-        //if partial, hide options 5 and 8
-        if (jQuery(overnightAttending).val() === "0") { // Full
+        // Modify the accommodation select options visibility       
+        switch(overnightAttendingChoice) { 
+	  case 'full': //if full, show options 5 and 8
             jQuery(overnightFirstChoiceSelect + " option[value=5]").show();
             jQuery(overnightFirstChoiceSelect + " option[value=8]").show();
             jQuery(overnightSecondChoiceSelect + " option[value=5]").show();
             jQuery(overnightSecondChoiceSelect + " option[value=8]").show();
-        } else if (jQuery(overnightAttending).val() === "1") { // Partial
+	  case 'partial': //if partial, hide options 5 and 8
             jQuery(overnightFirstChoiceSelect + " option[value=5]").hide();
             jQuery(overnightFirstChoiceSelect + " option[value=8]").hide();
             jQuery(overnightSecondChoiceSelect + " option[value=5]").hide();
@@ -251,6 +279,14 @@
         }
         jQuery(overnightRoommatePreferences).change();
     };
+  
+    var calculateOvernightFullSubtotal = function() {};
+    var calculateOvernightPartialSubtotal = function() {};
+    var calculateOvernightSubtotal = function() {};
+    var updateOvernightSubtotalField = function() {};
+/*
+ * Final section
+ */
     var attachEvents = function() {
         // Day checkbox events
         for (var i=0;i < days.length;i++) {
