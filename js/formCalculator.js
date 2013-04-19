@@ -11,8 +11,10 @@
         ,[75, 37.5, 350] // >= 26
     ];
     var overnightAccommodationsPrices = [
-        // Organized by type of accommodation
-        // Prices ordered as [week, day
+        /*
+	 * Organized by type of accommodation
+	 * Prices ordered as [week, day]
+	 */
         [ //Camping
             [0,0] // >= 0 && <= 5
             , [125,30] // >= 6 && <= 12
@@ -98,7 +100,7 @@
     // Roomate preferences
     var overnightRoommatePreferences = "#custom_list-515137f3e9e63";
     // Final fees and payment elements
-    var firstChoiceSubTotal = "#text-5158cf384d951";
+    var firstChoiceRegistrationFees = "#text-5158cf384d951";
     var secondChoiceSubTotal = "#text-5158cf3c9326f";
     var totalFeesFromAbove = "#text-515621f626b6e";
     var earlyDiscountRadio = "input:radio[name=custom_list-5156340d5ee07]:checked";
@@ -224,7 +226,7 @@
       /*
        * Get overnight attending choice, 
        * convert to meaningful text
-       * return lowercase 'full' or 'partial'
+       * return 'full' or 'partial'
        */
       var attendingChoice = jQuery(overnightAttending).val();
       var attendingText;
@@ -280,10 +282,37 @@
         jQuery(overnightRoommatePreferences).change();
     };
   
-    var calculateOvernightFullSubtotal = function() {};
-    var calculateOvernightPartialSubtotal = function() {};
-    var calculateOvernightSubtotal = function() {};
-    var updateOvernightSubtotalField = function() {};
+    var calculateOvernightFullRegistrationFees = function() {
+      /*
+       * calculate overnight full registration fees
+       * based on first choice accommodations and age group
+       * return float
+       */
+      var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
+      var ageGroupSelection = parseInt(jquery(ageGroupList),val());
+      var registrationFee = overnightAccommodationsPrices[firstChoiceAccommodations][ageGroupSelection][1];
+      return registrationFee;   
+    };
+    var calculateOvernightPartialRegistrationFees = function() {};
+    var calculateOvernightRegistrationFees = function() {
+      var overnightAttendingChoice = determineOvernightAttendingChoice();
+      var registrationFees;
+      switch(overnightAttendingChoice){
+	case 'full':
+	  registrationFees = calculateOvernightFullRegistrationFees();
+	  break;
+	case 'partial':
+	  registrationFees = calculateOvernightPartialRegistrationFees();
+	  break;
+	default:
+	  registrationFees = 0;
+      };
+      return registrationFees;
+    };
+    var updateOvernightRegistrationFeesField = function() {
+      var registrationFees = calculateOvernightSubtotal();
+      jQuery(firstChoiceRegistrationFees).val(registrationFees);
+    };
 /*
  * Final section
  */
