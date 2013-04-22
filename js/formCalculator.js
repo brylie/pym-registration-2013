@@ -400,6 +400,7 @@
     var updateOvernightRegistrationFeesField = function() {
       var registrationFees = calculateOvernightRegistrationFees();
       jQuery(overnightFirstChoiceFeesSubtotal).val(registrationFees);
+      jQuery(overnightFirstChoiceFeesSubtotal).attr("readonly", true);
     };
 /*
  * Final section
