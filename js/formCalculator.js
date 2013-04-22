@@ -1,8 +1,8 @@
 /* jshint laxcomma: true */
     // Static variables
-    var dateToday= new Date(); // Date used for discount calculation
-    var discountEnd = new Date(2013,05,21);
-    var deadline = new Date(2013,07,13);
+    var dateToday= new Date(); // User's current date, used for discount calculation
+    var discountEnd = new Date("May 21, 2013");
+    var deadline = new Date("July 1, 2013");
     
     // Price sets
     var commuterPrices = [ 
@@ -112,8 +112,7 @@
     var firstChoiceRegistrationFees = "#text-5158cf384d951";
     var secondChoiceSubTotal = "#text-5158cf3c9326f";
     var totalFeesFromAbove = "#text-515621f626b6e";
-    var earlyDiscountRadio = "input:radio[name=custom_list-5156340d5ee07]:checked";
-    // TODO: set the earlyDiscountRadio based on Date() ?
+    var earlyDiscountRadio = "input:radio[name='custom_list-5156340d5ee07']";
     // Donation and discount
     var optionalDonation = "#text-515621fd28e1c";
     var financialAid = "#text-5156220059f2d";
@@ -467,7 +466,21 @@
     };
     var setDiscountStatusSelector = function() {
       discountStatus = determineDiscountStatus();
-    }
+      switch(discountStatus) {
+	case "discount":
+	  jQuery(earlyDiscountRadio).filter('[value="0"]').attr("checked",true);
+	  jQuery(earlyDiscountRadio).filter('[value="0"]').change();
+	  break;
+	case "full":
+	  jQuery(earlyDiscountRadio).filter('[value="1"]').attr("checked",true);
+	  jQuery(earlyDiscountRadio).filter('[value="1"]').change();
+	  break;
+	case "late":
+	  jQuery(earlyDiscountRadio).filter('[value="2"]').attr("checked",true);
+	  jQuery(earlyDiscountRadio).filter('[value="1"]').change();
+	  break;
+      }
+    };
 
 /*
  * Events, etc..
@@ -510,4 +523,5 @@
       
     };
     jQuery(document).load(attachEvents());
+    jQuery(document).load(setDiscountStatusSelector());
     
