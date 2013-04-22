@@ -264,6 +264,7 @@
        */
         var subTotal = calculateCommuterFeesSubTotal();
         jQuery(commuterFeesSubTotal).val(subTotal);
+	jQuery(commuterFeesSubTotal).change();
     };
     var calculatePartialSessionLength = function() {
         var lengthOfStay;
@@ -419,14 +420,35 @@
       var registrationFees = calculateOvernightRegistrationFees();
       jQuery(overnightFirstChoiceFeesSubtotal).val(registrationFees);
       jQuery(overnightFirstChoiceFeesSubtotal).attr("readonly", true);
+      jQuery(overnightFirstChoiceFeesSubtotal).change();
     };
 /*
  * Final Fees and Payment Section
  */
     var updateTotalFeesFromAboveField = function() {
-      //
+      /*
+       * Determine whether attendance type is commuter or overnight
+       * Update the total fees due field with appropriate value
+       * return null
+       */
+      var attendanceType = getCommuterOrOvernight();
+      var totalFeesDue;
+      switch (attendanceType) {
+	case 'commuter':
+	  // commuter fees
+	  totalFeesDue = jQuery(commuterFeesSubTotal).val();
+	  break;
+	case 'overnight':
+	  // first choice registration fees
+	  totalFeesDue = jQuery(overnightFirstChoiceFeesSubtotal).val();
+	  break;
+	default:
+	  // null
+	  totalFeesDue = null;
+      }
+      jQuery(totalFeesFromAbove).val(totalFeesDue);
+      jQuery(totalFeesFromAbove).change();
     }
-
 
 /*
  * Events, etc..
@@ -462,6 +484,11 @@
       jQuery(overnightAttendingPartial).click(updateOvernightRegistrationFeesField);
       jQuery(overnightPartialSessionAmountOfDays).change(updateOvernightRegistrationFeesField);
       jQuery(ageGroupList).change(updateOvernightRegistrationFeesField);
+      
+      // Carry total fees values to end
+      jQuery(commuterFeesSubTotal).change(updateTotalFeesFromAboveField);
+      jQuery(overnightFirstChoiceFeesSubtotal).change(updateTotalFeesFromAboveField);
+      
     };
     jQuery(document).load(attachEvents());
     
