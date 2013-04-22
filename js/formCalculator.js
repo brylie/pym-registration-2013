@@ -137,6 +137,25 @@
      var ageGroupAdjusted = (ageGroupSelected >= 2) ? ageGroupSelected - 2 : undefined;
      return ageGroupAdjusted;
    };
+   var getCommuterOrOvernight = function() {
+      /*
+      * Determine whether commuter or overnight is selected
+      * return 'commuter' or 'overnight' (all lowercase)
+      */
+      var attendanceTypeSelected = jQuery(attendanceRadio).val();
+      var attendanceType
+      switch (attendanceTypeSelected) {
+	case "0":
+	  attendanceType = "commuter";
+	  break;
+	case "1":
+	  attendanceType = "overnight";
+	  break;
+	default:
+	  attendanceType = undefined;
+      }
+      return attendanceType;
+   }
    var getFirstChoiceAccommodations = function() {
     /*
      * Get the value for the 'First Choice Accommodations' selection
@@ -275,11 +294,11 @@
  * Overnight section
  */
     var determineOvernightAttendingChoice = function() {
-      /*
-       * Get overnight attending choice, 
-       * convert to meaningful text
-       * return 'full' or 'partial'
-       */
+    /*
+      * Get overnight attending choice, 
+      * convert to meaningful text
+      * return 'full' or 'partial'
+      */
       var attendingChoice = jQuery(overnightAttending).val();
       var attendingText;
       switch(attendingChoice) {
@@ -291,8 +310,8 @@
 	  break;
 	default:
 	  attendingText = undefined;
-      };
-      return attendingText;
+	};
+	return attendingText;
     };
     
     var modifyAccommodationsChoices = function() {
@@ -327,59 +346,59 @@
     }; 
     
     var updateRoommatePreferencesField = function() {
-        var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
-        var overnightRoommatePreferencesField = jQuery(overnightRoommatePreferences);
-        // Check if First Choice Accommodations is JYM (3) or YAF (4)
-        if (firstChoiceAccommodations === 3) { // JYM
-            overnightRoommatePreferencesField.val("4");
-        } else if (firstChoiceAccommodations === 4) { // YAF
-            overnightRoommatePreferencesField.val("5");
-        } else if (firstChoiceAccommodations === 1) { // Camping
-            overnightRoommatePreferencesField.val("2");
-        } else if (firstChoiceAccommodations === 7) { // Single - Shared Bath
-            overnightRoommatePreferencesField.val("3");
+	var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
+	var overnightRoommatePreferencesField = jQuery(overnightRoommatePreferences);
+	// Check if First Choice Accommodations is JYM (3) or YAF (4)
+	if (firstChoiceAccommodations === 3) { // JYM
+	    overnightRoommatePreferencesField.val("4");
+	} else if (firstChoiceAccommodations === 4) { // YAF
+	    overnightRoommatePreferencesField.val("5");
+	} else if (firstChoiceAccommodations === 1) { // Camping
+	    overnightRoommatePreferencesField.val("2");
+	} else if (firstChoiceAccommodations === 7) { // Single - Shared Bath
+	    overnightRoommatePreferencesField.val("3");
 	} else {
-            overnightRoommatePreferencesField.val("1"); // Blank
-        }
-        jQuery(overnightRoommatePreferences).change();
+	    overnightRoommatePreferencesField.val("1"); // Blank
+	}
+	jQuery(overnightRoommatePreferences).change();
     };
-  
+
     var calculateOvernightFullRegistrationFees = function() {
       /*
-       * calculate overnight full registration fees
-       * based on first choice accommodations and age group
-       * return integer
-       */
+	* calculate overnight full registration fees
+	* based on first choice accommodations and age group
+	* return integer
+	*/
       var accommodations = getFirstChoiceAccommodations();
       var ageGroup = getAgeGroup();
       var registrationFee;
       if (typeof(ageGroup) === "number" && typeof(accommodations) === "number") {
-        registrationFee = overnightAccommodationsPrices[accommodations][ageGroup][0];
+	registrationFee = overnightAccommodationsPrices[accommodations][ageGroup][0];
       } else {
-        registrationFee = null;
+	registrationFee = null;
       }
       return registrationFee;   
     };
-    
+
     var calculateOvernightPartialRegistrationFees = function() {
       /*
-       * calculate overnight partial registration fees
-       * based on first choice accommodations, age group, and duration of stay
-       * return integer
-       */
+	* calculate overnight partial registration fees
+	* based on first choice accommodations, age group, and duration of stay
+	* return integer
+	*/
       var accommodations = getFirstChoiceAccommodations();
       var ageGroup = getAgeGroup();
       var duration = parseInt(jQuery(overnightPartialSessionAmountOfDays).val(), 10);
       var registrationFee;
       // Make sure ageGroup, accommodations, and duration are numeric
       if (typeof(accommodations) === "number" && typeof(ageGroup) === "number" && typeof(duration) === "number") {
-        registrationFee = overnightAccommodationsPrices[accommodations][ageGroup][1] * duration;
+	registrationFee = overnightAccommodationsPrices[accommodations][ageGroup][1] * duration;
       } else {
 	registrationFee = null;
       }
       return registrationFee;
     };
-    
+
     var calculateOvernightRegistrationFees = function() {
       var overnightAttendingChoice = determineOvernightAttendingChoice();
       var registrationFees;
@@ -395,14 +414,22 @@
       };
       return registrationFees;
     };
-    
+
     var updateOvernightRegistrationFeesField = function() {
       var registrationFees = calculateOvernightRegistrationFees();
       jQuery(overnightFirstChoiceFeesSubtotal).val(registrationFees);
       jQuery(overnightFirstChoiceFeesSubtotal).attr("readonly", true);
     };
 /*
- * Final section
+ * Final Fees and Payment Section
+ */
+    var updateTotalFeesFromAboveField = function() {
+      //
+    }
+
+
+/*
+ * Events, etc..
  */
     var attachEvents = function() {
       // Age events
