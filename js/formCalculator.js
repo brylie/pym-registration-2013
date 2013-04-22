@@ -543,9 +543,32 @@
       jQuery(registrationFeesField).change();
     }
     var calculateTotalFeesDue = function() {
-      //var 
+      /*
+       * Calculate the total fees due
+       * based on registration fees, donation, and financial aid values
+       * return number
+       */
+      if (isNaN(donationValue) || typeof(donationValue) === "string")
+      var donationValue = parseFloat(jQuery(optionalDonationField).val());
+      var financialAidValue = parseFloat(jQuery(financialAidField).val());
+      var registrationFeesValue = parseFloat(jQuery(registrationFeesField).val());
+      // Make sure the donation and financial aid values are numeric
+      var donation = (isNaN(donationValue) || typeof(donationValue) === "string") ? 0 : donationValue;
+      var financialAid = (isNaN(financialAidValue) || typeof(financialAidValue) === "string") ? 0 : financialAidValue;
+      var registrationFees = (isNaN(registrationFeesValue) || typeof(registrationFeesValue) === "string") ? 0 : registrationFeesValue;
       
+      var totalFeesDue = registrationFees + donationValue - financialAid;
+      if (isNaN(totalFeesDue)) {
+	return null;
+      } else {
+	return totalFeesDue;
+      }
     };
+    var updateTotalFeesDueField = function() {
+      var totalFeesDue = calculateTotalFeesDue();
+      jQuery(totalFeesDueField).val(totalFeesDue);
+      jQuery(totalFeesDueField).change();
+    }
 
 /*
  * Events, etc..
@@ -594,6 +617,12 @@
       jQuery(totalFeesFromAbove).change(updateRegistrationFeesField);
       jQuery(lateFeeField).change(updateRegistrationFeesField);
       jQuery(discountField).change(updateRegistrationFeesField);
+      
+      // Calculate total fees due
+      jQuery(registrationFeesField).change(updateTotalFeesDueField);
+      jQuery(optionalDonationField).keyup(updateTotalFeesDueField);
+      jQuery(financialAidField).keyup(updateTotalFeesDueField);
+      
       
     };
     jQuery(document).load(attachEvents());
