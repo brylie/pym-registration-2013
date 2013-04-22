@@ -70,6 +70,7 @@
         ]
     ];
     // Form elements
+    var ageAtAnnualSession = "#text-515117b1e3db0";
     var ageGroupList = "#custom_list-5153b344f2fa7";
     var attendanceRadio = "input:radio[name=custom_list-51512c144f9fb]:checked";
     //Commuter form elements
@@ -147,7 +148,21 @@
     var accommodationsAdjusted = (accommodationsSelection >= 1) ? accommodationsSelection - 1 : undefined;
     return accommodationsAdjusted;
    }
-
+   var updateAgeGroupSelect = function() {
+    var age = parseInt(jQuery(ageAtAnnualSession).val(), 10);
+    if (age >= 0 && age <= 5) {
+      jQuery(ageGroupList).val(2);
+    } else if (age >= 6 && age <= 12) {
+      jQuery(ageGroupList).val(3);
+    } else if (age >= 13 && age <= 25) {
+      jQuery(ageGroupList).val(4);
+    } else if (age >= 26) {
+      jQuery(ageGroupList).val(5);
+    } else {
+      jQuery(ageGroupList).val(0);
+    }
+    jQuery(ageGroupList).change();
+   };
 /*
  * Commuter section
  */
@@ -389,33 +404,36 @@
  * Final section
  */
     var attachEvents = function() {
-        // Day checkbox events
-        for (var i=0;i < days.length;i++) {
-          jQuery(days[i]).click(updateCommuterAmountOfDaysField);
-         }
-         // Commuter SubTotal field update triggers
-         jQuery(commuterAmountOfDays).change(updateCommuterFeesSubTotalField);
-         jQuery(ageGroupList).change(updateCommuterFeesSubTotalField);
+      // Age events
+      jQuery(ageAtAnnualSession).keyup(updateAgeGroupSelect);
+      
+      // Day checkbox events
+      for (var i=0;i < days.length;i++) {
+      jQuery(days[i]).click(updateCommuterAmountOfDaysField);
+      }
+      // Commuter SubTotal field update triggers
+      jQuery(commuterAmountOfDays).change(updateCommuterFeesSubTotalField);
+      jQuery(ageGroupList).change(updateCommuterFeesSubTotalField);
 
-         // Partial session event triggers
-         jQuery(overnightPartialSessionArrival).change(updateAmountOfDaysField);
-         jQuery(overnightPartialSessionDeparture).change(updateAmountOfDaysField);
+      // Partial session event triggers
+      jQuery(overnightPartialSessionArrival).change(updateAmountOfDaysField);
+      jQuery(overnightPartialSessionDeparture).change(updateAmountOfDaysField);
 
-         // Overnight accommodations list modifier based on selection
-         jQuery(overnightAttendingFull).click(modifyAccommodationsChoices);
-         jQuery(overnightAttendingPartial).click(modifyAccommodationsChoices);
-         
-         // Roommate preferences auto-select
-         jQuery(overnightFirstChoiceSelect).click(updateRoommatePreferencesField);
-         jQuery(overnightAttendingFull).click(updateRoommatePreferencesField);
-         jQuery(overnightAttendingPartial).click(updateRoommatePreferencesField);
- 
-         // Overnight fees field update
-         jQuery(overnightFirstChoiceSelect).click(updateOvernightRegistrationFeesField);
-         jQuery(overnightAttendingFull).click(updateOvernightRegistrationFeesField);
-         jQuery(overnightAttendingPartial).click(updateOvernightRegistrationFeesField);
-         jQuery(overnightPartialSessionAmountOfDays).change(updateOvernightRegistrationFeesField);
-         jQuery(ageGroupList).change(updateOvernightRegistrationFeesField);
+      // Overnight accommodations list modifier based on selection
+      jQuery(overnightAttendingFull).click(modifyAccommodationsChoices);
+      jQuery(overnightAttendingPartial).click(modifyAccommodationsChoices);
+
+      // Roommate preferences auto-select
+      jQuery(overnightFirstChoiceSelect).click(updateRoommatePreferencesField);
+      jQuery(overnightAttendingFull).click(updateRoommatePreferencesField);
+      jQuery(overnightAttendingPartial).click(updateRoommatePreferencesField);
+
+      // Overnight fees field update
+      jQuery(overnightFirstChoiceSelect).click(updateOvernightRegistrationFeesField);
+      jQuery(overnightAttendingFull).click(updateOvernightRegistrationFeesField);
+      jQuery(overnightAttendingPartial).click(updateOvernightRegistrationFeesField);
+      jQuery(overnightPartialSessionAmountOfDays).change(updateOvernightRegistrationFeesField);
+      jQuery(ageGroupList).change(updateOvernightRegistrationFeesField);
     };
     jQuery(document).load(attachEvents());
     
