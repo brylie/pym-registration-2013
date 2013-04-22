@@ -1,6 +1,9 @@
 /* jshint laxcomma: true */
     // Static variables
-    var date = new Date(); // Date used for discount calculation
+    var dateToday= new Date(); // Date used for discount calculation
+    var discountEnd = new Date(2013,05,21);
+    var deadline = new Date(2013,07,13);
+    
     // Price sets
     var commuterPrices = [ 
     /* 
@@ -448,6 +451,22 @@
       }
       jQuery(totalFeesFromAbove).val(totalFeesDue);
       jQuery(totalFeesFromAbove).change();
+    };
+    var determineDiscountStatus = function() {
+      /*
+       * Determine discount eligibility
+       * based on user date, discount date, and deadline date
+       */
+      if (dateToday <= discountEnd) {
+        return "discount"
+      } else if (dateToday > discountEnd && dateToday <= deadline) {
+        return "full"
+      } else if (dateToday > deadline) {
+        return "late"
+      }
+    };
+    var setDiscountStatusSelector = function() {
+      discountStatus = determineDiscountStatus();
     }
 
 /*
