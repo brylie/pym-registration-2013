@@ -269,6 +269,7 @@
         var lengthOfStay = calculatePartialSessionLength();
         jQuery(overnightPartialSessionAmountOfDays).val(lengthOfStay);
 	jQuery(overnightPartialSessionAmountOfDays).change();
+	jQuery(overnightPartialSessionAmountOfDays).attr("readonly", true);
     };
 /*
  * Overnight section
@@ -310,14 +311,12 @@
         // Modify the accommodation select options visibility       
         switch(overnightAttendingChoice) { 
 	  case 'full': //if full, show options 5 and 8
-	    console.log("Showing Full session choices");
             jQuery(overnightFirstChoiceSelect + " option[value=5]").show();
             jQuery(overnightFirstChoiceSelect + " option[value=8]").show();
             jQuery(overnightSecondChoiceSelect + " option[value=5]").show();
             jQuery(overnightSecondChoiceSelect + " option[value=8]").show();
 	    break;
 	  case 'partial': //if partial, hide options 5 and 8
-	    console.log("Hiding full session choices");
             jQuery(overnightFirstChoiceSelect + " option[value=5]").hide();
             jQuery(overnightFirstChoiceSelect + " option[value=8]").hide();
             jQuery(overnightSecondChoiceSelect + " option[value=5]").hide();
