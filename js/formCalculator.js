@@ -2,10 +2,14 @@
     // Static variables
     var date = new Date(); // Date used for discount calculation
     // Price sets
-    var commuterPrices = [ // [daily, discount, weekly]
-        0 // null (placeholder selection)
-        ,0 // null (placeholder selection)
-        ,[0, 0, 0] // >= 0 && <= 5
+    var commuterPrices = [ 
+    /* 
+     * Prices for commuters
+     * Organized by age group
+     * Prices ordered as:
+     * [daily, discount, weekly]
+     */
+        [0, 0, 0] // >= 0 && <= 5
         ,[30, 15, 125] // >= 6 && <= 12 
         ,[45, 22.5, 200] // >= 13 && <= 25
         ,[75, 37.5, 350] // >= 26
@@ -13,9 +17,10 @@
     var overnightAccommodationsPrices = [
         /*
 	 * Organized by type of accommodation
+	 * Subsequently ordered by age group
 	 * Prices ordered as [week, day]
 	 */
-        [ //Camping
+	[ //Camping
             [0,0] // >= 0 && <= 5
             , [125,30] // >= 6 && <= 12
             , [200,45] // >= 13 && <= 25
@@ -30,14 +35,14 @@
         , [ // JYM
             [null,null] // >= 0 && <= 5 Not applicable
             , [null,null] // >= 6 && <= 12 Not applicable
-            , [300,60] // >= 13 && <= 25 (applicable)
+            , [300,60] // >= 13 && <= 25
             , [null,null] // >= 26 Not applicable
         ]
         , [ // YAF
             [null,null] // >= 0 && <= 5 Not applicable
             , [null,null] // >= 6 && <= 12 Not applicable
-            , [300,60] // >= 13 && <= 25 (applicable)
-            , [425, 90] // >= 26 (applicable)
+            , [300,60] // >= 13 && <= 25
+            , [425, 90] // >= 26
         ]
         , [ // Dormitory
             [0,null] // >= 0 && <= 5
@@ -117,6 +122,33 @@
     // End of initial variables
     // Begin form functions
 /*
+ * Utility functions
+ */
+   var getAgeGroup = function() {
+     /* 
+      * Get the value for the age group selection
+      * Adjust the value to be one of zero through four
+      * Set to zero if no age group is selected (i.e. ageGroupSelected < 2)
+      * This will make it easier for the registration fee calculator
+      * return int (in range 0-4 inclusive)
+      */
+     var ageGroupSelected = parseInt(jQuery(ageGroupList).val(), 10);
+     var ageGroupAdjusted = (ageGroupSelected >= 2) ? ageGroupSelected - 2 : undefined;
+     return ageGroupAdjusted;
+   };
+   var getFirstChoiceAccommodations = function() {
+    /*
+     * Get the value for the 'First Choice Accommodations' selection
+     * Adjust the value to remove the null options
+     * This will make the value align with the price structure
+     * return int (in range 0 - 7 inclusive)
+     */
+    var accommodationsSelection = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
+    var accommodationsAdjusted = (accommodationsSelection >= 1) ? accommodationsSelection - 1 : undefined;
+    return accommodationsAdjusted;
+   }
+
+/*
  * Commuter section
  */
     var countCommuterDays = function() {
@@ -134,7 +166,7 @@
     };
     var determineCommuterDaysChecked = function() {
       /* 
-       * return an array of day values
+       * Determine which specific days are selected
        * based on commuter day checkboxes
        * return array of numeric day values
        */
@@ -145,7 +177,8 @@
         };
       };
       return commuterDaysCheckedList;
-    }
+    };
+    
     var updateCommuterAmountOfDaysField = function() {
       /*
        * Update the 'commuter amount of days' field
@@ -157,6 +190,7 @@
         jQuery(commuterAmountOfDays).val(numberOfDays);
         jQuery(commuterAmountOfDays).change();
     };
+    
     var calculateCommuterFeesSubTotal = function() {
       /*
        * calculate the commuter fees subtotal
@@ -165,24 +199,24 @@
        * Saturday and Monday fees are based on the discount rate
        * return float ?
        */
-        var ageGroup = parseInt(jQuery(ageGroupList).val(), 10);
+        var ageGroup = getAgeGroup();
         var numberOfDays = parseInt(jQuery(commuterAmountOfDays).val(), 10);
 	var specificDays = determineCommuterDaysChecked();
 	var subTotal = 0; // integer
 	
         if (numberOfDays < 5) { // sum daily prices
           for (i=0;i<days.length;i++) {
-	    if (specificDays[i] > 0 && specificDays[i] < 5) { // not Monday or Saturday
-	      subTotal += commuterPrices[ageGroup][0]; // add full day rate to subtotal
-	    } else if (specificDays[i] === 0 || specificDays[i] === 5) { // is Monday or Saturday
-	      subTotal += commuterPrices[ageGroup][1]; // add discount price to subtotal
-	    } else { // otherwise add zero (catch all)
-	      subTotal += 0;
-	    }
-	  };
-	} else if (numberOfDays >= 5 && numberOfDays <= 6) { // set to weekly rate
-	  subTotal = commuterPrices[ageGroup][2]; 
-	} else { // Catch all
+	        if (specificDays[i] > 0 && specificDays[i] < 5) { // not Monday or Saturday
+	          subTotal += commuterPrices[ageGroup][0]; // add full day rate to subtotal
+	        } else if (specificDays[i] === 0 || specificDays[i] === 5) { // is Monday or Saturday
+	          subTotal += commuterPrices[ageGroup][1]; // add discount price to subtotal
+	        } else { // otherwise add zero (catch all)
+	          subTotal += 0;
+	        }
+	      };
+	    } else if (numberOfDays >= 5 && numberOfDays <= 6) { // set to weekly rate
+	      subTotal = commuterPrices[ageGroup][2]; 
+	    } else { // Catch all
             subTotal = 0;
         }
         return subTotal;
@@ -218,6 +252,7 @@
     var updateAmountOfDaysField = function() {
         var lengthOfStay = calculatePartialSessionLength();
         jQuery(overnightPartialSessionAmountOfDays).val(lengthOfStay);
+	jQuery(overnightPartialSessionAmountOfDays).change();
     };
 /*
  * Overnight section
@@ -242,7 +277,14 @@
       };
       return attendingText;
     };
+    
     var modifyAccommodationsChoices = function() {
+      /*
+       * Modify the Accommodations Choices select box
+       * Remove invalid choices based on partial or full duration
+       * Reset the select box to prevent incorrect selection
+       * Return undefined ? null ?
+       */
         // check whether overnight attending full or partial is selected
         var overnightAttendingChoice = determineOvernightAttendingChoice();
         // Set the accommodation select values to zero (no choice)
@@ -252,18 +294,23 @@
         // Modify the accommodation select options visibility       
         switch(overnightAttendingChoice) { 
 	  case 'full': //if full, show options 5 and 8
+	    console.log("Showing Full session choices");
             jQuery(overnightFirstChoiceSelect + " option[value=5]").show();
             jQuery(overnightFirstChoiceSelect + " option[value=8]").show();
             jQuery(overnightSecondChoiceSelect + " option[value=5]").show();
             jQuery(overnightSecondChoiceSelect + " option[value=8]").show();
+	    break;
 	  case 'partial': //if partial, hide options 5 and 8
+	    console.log("Hiding full session choices");
             jQuery(overnightFirstChoiceSelect + " option[value=5]").hide();
             jQuery(overnightFirstChoiceSelect + " option[value=8]").hide();
             jQuery(overnightSecondChoiceSelect + " option[value=5]").hide();
             jQuery(overnightSecondChoiceSelect + " option[value=8]").hide();
+	    break;
         }
-        return null;
-    };   
+        return undefined;
+    }; 
+    
     var updateRoommatePreferencesField = function() {
         var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
         var overnightRoommatePreferencesField = jQuery(overnightRoommatePreferences);
@@ -286,14 +333,38 @@
       /*
        * calculate overnight full registration fees
        * based on first choice accommodations and age group
-       * return float
+       * return integer
        */
-      var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
-      var ageGroupSelection = parseInt(jquery(ageGroupList),val());
-      var registrationFee = overnightAccommodationsPrices[firstChoiceAccommodations][ageGroupSelection][1];
+      var accommodations = getFirstChoiceAccommodations();
+      var ageGroup = getAgeGroup();
+      var registrationFee;
+      if (typeof(ageGroup) === "number" && typeof(accommodations) === "number") {
+        registrationFee = overnightAccommodationsPrices[accommodations][ageGroup][0];
+      } else {
+        registrationFee = null;
+      }
       return registrationFee;   
     };
-    var calculateOvernightPartialRegistrationFees = function() {};
+    
+    var calculateOvernightPartialRegistrationFees = function() {
+      /*
+       * calculate overnight partial registration fees
+       * based on first choice accommodations, age group, and duration of stay
+       * return integer
+       */
+      var accommodations = getFirstChoiceAccommodations();
+      var ageGroup = getAgeGroup();
+      var duration = parseInt(jQuery(overnightPartialSessionAmountOfDays).val(), 10);
+      var registrationFee;
+      // Make sure ageGroup, accommodations, and duration are numeric
+      if (typeof(accommodations) === "number" && typeof(ageGroup) === "number" && typeof(duration) === "number") {
+        registrationFee = overnightAccommodationsPrices[accommodations][ageGroup][1] * duration;
+      } else {
+	registrationFee = null;
+      }
+      return registrationFee;
+    };
+    
     var calculateOvernightRegistrationFees = function() {
       var overnightAttendingChoice = determineOvernightAttendingChoice();
       var registrationFees;
@@ -309,9 +380,10 @@
       };
       return registrationFees;
     };
+    
     var updateOvernightRegistrationFeesField = function() {
-      var registrationFees = calculateOvernightSubtotal();
-      jQuery(firstChoiceRegistrationFees).val(registrationFees);
+      var registrationFees = calculateOvernightRegistrationFees();
+      jQuery(overnightFirstChoiceFeesSubtotal).val(registrationFees);
     };
 /*
  * Final section
@@ -337,5 +409,13 @@
          jQuery(overnightFirstChoiceSelect).click(updateRoommatePreferencesField);
          jQuery(overnightAttendingFull).click(updateRoommatePreferencesField);
          jQuery(overnightAttendingPartial).click(updateRoommatePreferencesField);
+ 
+         // Overnight fees field update
+         jQuery(overnightFirstChoiceSelect).click(updateOvernightRegistrationFeesField);
+         jQuery(overnightAttendingFull).click(updateOvernightRegistrationFeesField);
+         jQuery(overnightAttendingPartial).click(updateOvernightRegistrationFeesField);
+         jQuery(overnightPartialSessionAmountOfDays).change(updateOvernightRegistrationFeesField);
+         jQuery(ageGroupList).change(updateOvernightRegistrationFeesField);
     };
     jQuery(document).load(attachEvents());
+    
