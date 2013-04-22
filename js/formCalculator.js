@@ -466,6 +466,7 @@
     };
     var setDiscountStatusSelector = function() {
       discountStatus = determineDiscountStatus();
+      jQuery(earlyDiscountRadio).attr("disabled", true);
       switch(discountStatus) {
 	case "discount":
 	  jQuery(earlyDiscountRadio).filter('[value="0"]').attr("checked",true);
