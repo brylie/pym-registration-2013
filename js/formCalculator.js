@@ -162,6 +162,7 @@
       jQuery(ageGroupList).val(0);
     }
     jQuery(ageGroupList).change();
+    jQuery(ageGroupList).attr("disabled", true);
    };
 /*
  * Commuter section
