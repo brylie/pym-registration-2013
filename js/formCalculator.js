@@ -3,6 +3,8 @@
     var dateToday= new Date(); // User's current date, used for discount calculation
     var discountEnd = new Date("May 21, 2013");
     var deadline = new Date("July 1, 2013");
+    var discount = 0.05; // 5%
+    var lateFee = 0.05; // 5%
     
     // Price sets
     var commuterPrices = [ 
@@ -113,12 +115,14 @@
     var secondChoiceSubTotal = "#text-5158cf3c9326f";
     var totalFeesFromAbove = "#text-515621f626b6e";
     var earlyDiscountRadio = "input:radio[name='custom_list-5156340d5ee07']";
-    // Donation and discount
-    var optionalDonation = "#text-515621fd28e1c";
-    var financialAid = "#text-5156220059f2d";
+    // Donation, late fee, tuition, and discount
+    var optionalDonationField = "#text-515621fd28e1c";
+    var financialAidField = "#text-5156220059f2d";
+    var discountField = "#text-5156341639bc6";
+    var lateFeeField = "#text-5156341967a03";
     // Total and subtotal
-    var subTotalFees = "#text-515621f92963c";
-    var totalFeesDue = "#text-5156220324787";
+    var registrationFeesField = "#text-515621f92963c";
+    var totalFeesDueField = "#text-5156220324787";
     //Payment section
     var amountEnclosed = "#text-515622061f15c";
     var balanceDueOnArrival = "#text-51563412d9e9e";
@@ -465,7 +469,7 @@
       }
     };
     var setDiscountStatusSelector = function() {
-      discountStatus = determineDiscountStatus();
+      var discountStatus = determineDiscountStatus();
       jQuery(earlyDiscountRadio).attr("disabled", true);
       switch(discountStatus) {
 	case "discount":
@@ -481,6 +485,61 @@
 	  jQuery(earlyDiscountRadio).filter('[value="1"]').change();
 	  break;
       }
+    };
+    var calculateEarlyDiscount = function() {
+      /*
+       * Calculate the discount price
+       * based on Total Fees From Above field and discount percent
+       */
+      var subtotal = parseInt(jQuery(totalFeesFromAbove).val());
+      var discountPrice = (subtotal * discount).toFixed(2);
+      return discountPrice;
+    };
+    var updateEarlyDiscountField = function() {
+      var discountPrice = calculateEarlyDiscount();
+      jQuery(discountField).val(discountPrice);
+      jQuery(discountField).change();
+    };
+    var calculateLateFee = function() {
+      /*
+       * Calculate the late fee price
+       * based on Total Fees From Above field and late fee percent
+       */
+      var subtotal = parseInt(jQuery(totalFeesFromAbove).val(), 10);
+      var lateFeePrice = (subtotal * lateFee).toFixed(2);
+      return lateFeePrice;
+    };
+    var updateLateFeeField = function() {
+      var lateFeePrice = calculateLateFee();
+      jQuery(lateFeeField).val(lateFeePrice);
+      jQuery(lateFeeField).change();
+    };
+    var calculateRegistrationFees = function() {
+      var registrationFees;
+      var subtotal = parseInt(jQuery(totalFeesFromAbove).val(), 10);
+      var discountStatus = determineDiscountStatus();
+      switch(discountStatus) {
+	case "discount":
+	  var discount = jQuery(discountField).val();
+	  registrationFees = subtotal - discount;
+	  break;
+	case "full":
+	  registrationFees = subtotal;
+	  break;
+	case "late":
+	  var lateFee = jQuery(lateFeeField).val();
+	  registrationFees = subtotal + lateFee;
+	  break;
+      }
+      return registrationFees;
+    };
+    var updateRegistrationFeesField = function() {
+      var registrationFees = calculateRegistrationFees();
+      jQuery(registrationFeesField).val(registrationFees);
+      jQuery(registrationFeesField).change();
+    }
+    var calculateTotalFeesDue = function() {
+      
     };
 
 /*
@@ -522,6 +581,9 @@
       jQuery(commuterFeesSubTotal).change(updateTotalFeesFromAboveField);
       jQuery(overnightFirstChoiceFeesSubtotal).change(updateTotalFeesFromAboveField);
       
+      // Calculate discount
+      jQuery(totalFeesFromAbove).change(updateEarlyDiscountField);
+      jQuery(totalFeesFromAbove).change(updateLateFeeField);
     };
     jQuery(document).load(attachEvents());
     jQuery(document).load(setDiscountStatusSelector());
