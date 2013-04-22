@@ -124,8 +124,8 @@
     var registrationFeesField = "#text-515621f92963c";
     var totalFeesDueField = "#text-5156220324787";
     //Payment section
-    var amountEnclosed = "#text-515622061f15c";
-    var balanceDueOnArrival = "#text-51563412d9e9e";
+    var amountEnclosedField = "#text-515622061f15c";
+    var balanceDueOnArrivalField = "#text-51563412d9e9e";
     // End of initial variables
     // Begin form functions
 /*
@@ -503,6 +503,8 @@
       var discountPrice = calculateEarlyDiscount();
       jQuery(discountField).val(discountPrice);
       jQuery(discountField).change();
+      jQuery(discountField).attr("readonly", true);
+      
     };
     var calculateLateFee = function() {
       /*
@@ -517,6 +519,7 @@
       var lateFeePrice = calculateLateFee();
       jQuery(lateFeeField).val(lateFeePrice);
       jQuery(lateFeeField).change();
+      jQuery(lateFeeField).attr("readonly", true);
     };
     var calculateRegistrationFees = function() {
       var registrationFees;
@@ -541,6 +544,7 @@
       var registrationFees = calculateRegistrationFees();
       jQuery(registrationFeesField).val(registrationFees);
       jQuery(registrationFeesField).change();
+      jQuery(registrationFeesField).attr("readonly", true);
     }
     var calculateTotalFeesDue = function() {
       /*
@@ -548,7 +552,6 @@
        * based on registration fees, donation, and financial aid values
        * return number
        */
-      if (isNaN(donationValue) || typeof(donationValue) === "string")
       var donationValue = parseFloat(jQuery(optionalDonationField).val());
       var financialAidValue = parseFloat(jQuery(financialAidField).val());
       var registrationFeesValue = parseFloat(jQuery(registrationFeesField).val());
@@ -568,6 +571,20 @@
       var totalFeesDue = calculateTotalFeesDue();
       jQuery(totalFeesDueField).val(totalFeesDue);
       jQuery(totalFeesDueField).change();
+      jQuery(totalFeesDueField).attr("readonly", true);
+    };
+    
+    calculateBalanceDueOnArrival = function() {
+      var totalFeesDue = calculateTotalFeesDue();
+      var amountEnclosedValue = parseFloat(jQuery(amountEnclosedField).val());
+      var amountEnclosed = (isNaN(amountEnclosedValue) || typeof(amountEnclosedValue) === "string") ? 0 : amountEnclosedValue;
+      return amountEnclosed;
+    };
+    var updateBalanceDueOnArrivalField = function() {
+      var balanceDueOnArrival = calculateBalanceDueOnArrival();
+      jQuery(balanceDueOnArrivalField).val(balanceDueOnArrival);
+      jQuery(balanceDueOnArrivalField).change();
+      jQuery(balanceDueOnArrivalField).attr("readonly", true);
     }
 
 /*
@@ -623,6 +640,8 @@
       jQuery(optionalDonationField).keyup(updateTotalFeesDueField);
       jQuery(financialAidField).keyup(updateTotalFeesDueField);
       
+      // Calculate balance due on arrival
+      jQuery(amountEnclosedField).keyup(updateBalanceDueOnArrivalField);
       
     };
     jQuery(document).load(attachEvents());
