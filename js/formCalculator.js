@@ -469,6 +469,10 @@
       }
     };
     var setDiscountStatusSelector = function() {
+      /*
+       * Set the discount status
+       * based on user date
+       */
       var discountStatus = determineDiscountStatus();
       jQuery(earlyDiscountRadio).attr("disabled", true);
       switch(discountStatus) {
@@ -539,6 +543,7 @@
       jQuery(registrationFeesField).change();
     }
     var calculateTotalFeesDue = function() {
+      //var 
       
     };
 
@@ -584,6 +589,12 @@
       // Calculate discount
       jQuery(totalFeesFromAbove).change(updateEarlyDiscountField);
       jQuery(totalFeesFromAbove).change(updateLateFeeField);
+      
+      // Calculate registration fees
+      jQuery(totalFeesFromAbove).change(updateRegistrationFeesField);
+      jQuery(lateFeeField).change(updateRegistrationFeesField);
+      jQuery(discountField).change(updateRegistrationFeesField);
+      
     };
     jQuery(document).load(attachEvents());
     jQuery(document).load(setDiscountStatusSelector());
