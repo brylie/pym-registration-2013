@@ -574,11 +574,12 @@
       jQuery(totalFeesDueField).attr("readonly", true);
     };
     
-    calculateBalanceDueOnArrival = function() {
+    var calculateBalanceDueOnArrival = function() {
       var totalFeesDue = calculateTotalFeesDue();
       var amountEnclosedValue = parseFloat(jQuery(amountEnclosedField).val());
       var amountEnclosed = (isNaN(amountEnclosedValue) || typeof(amountEnclosedValue) === "string") ? 0 : amountEnclosedValue;
-      return amountEnclosed;
+      var amountDue = totalFeesDue - amountEnclosed;
+      return amountDue;
     };
     var updateBalanceDueOnArrivalField = function() {
       var balanceDueOnArrival = calculateBalanceDueOnArrival();
