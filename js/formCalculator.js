@@ -1,4 +1,6 @@
-/* jshint laxcomma: true */
+jQuery(document).ready( function() {
+  "use strict";
+  /* jshint laxcomma: true */
     // Static variables
     var dateToday= new Date(); // User's current date, used for discount calculation
     var discountEnd = new Date("May 21, 2013");
@@ -129,7 +131,7 @@
     // End of initial variables
     // Begin form functions
 /*
- * Utility functions
+ * General functions
  */
    var getAgeGroup = function() {
      /* 
@@ -189,6 +191,27 @@
     jQuery(ageGroupList).change();
     jQuery(ageGroupList).attr("disabled", true);
    };
+   var isNumber = function(input) {
+     /*
+      * Test to make sure a value is numeric
+      * and not text (e.g. the empty string '')
+      * return boolean
+      */
+    return (!(isNaN(input)) && (typeof(input) !== "string") && input !== null);
+   };
+   var dollarFormat = function(input) {
+    /*
+     * convert number to dollar format string
+     * will make sure there are two decimal places
+     * or strip .00 for whole dollar values
+     * e.g. 32.95 or 77
+     * input number
+     * return number
+     */
+    // make sure input is number
+    var inputNumber = (isNumber(input)) ? input : 0;
+    return inputNumber.toFixed(2).replace(".00","");
+   };
 /*
  * Commuter section
  */
@@ -230,23 +253,22 @@
         // update the form element
         jQuery(commuterAmountOfDays).val(numberOfDays);
         jQuery(commuterAmountOfDays).change();
-    };
-    
+    };  
     var calculateCommuterFeesSubTotal = function() {
       /*
        * calculate the commuter fees subtotal
        * based on the age group and number of days checked
        * if five or more days are checked, default to weekly rate
        * Saturday and Monday fees are based on the discount rate
-       * return float ?
+       * return number
        */
         var ageGroup = getAgeGroup();
-        var numberOfDays = parseInt(jQuery(commuterAmountOfDays).val(), 10);
+        var numberOfDays = parseFloat(jQuery(commuterAmountOfDays).val(), 10);
 	var specificDays = determineCommuterDaysChecked();
 	var subTotal = 0; // integer
 	
         if (numberOfDays < 5) { // sum daily prices
-          for (i=0;i<days.length;i++) {
+          for (var i=0;i<days.length;i++) {
 	        if (specificDays[i] > 0 && specificDays[i] < 5) { // not Monday or Saturday
 	          subTotal += commuterPrices[ageGroup][0]; // add full day rate to subtotal
 	        } else if (specificDays[i] === 0 || specificDays[i] === 5) { // is Monday or Saturday
@@ -260,7 +282,7 @@
 	    } else { // Catch all
             subTotal = 0;
         }
-        return subTotal;
+        return (isNumber(subTotal)) ? subTotal : 0;
     };
     var updateCommuterFeesSubTotalField = function() {
       /*
@@ -350,8 +372,7 @@
 	    break;
         }
         return undefined;
-    }; 
-    
+    };   
     var updateRoommatePreferencesField = function() {
 	var firstChoiceAccommodations = parseInt(jQuery(overnightFirstChoiceSelect).val(), 10);
 	var overnightRoommatePreferencesField = jQuery(overnightRoommatePreferences);
@@ -369,7 +390,6 @@
 	}
 	jQuery(overnightRoommatePreferences).change();
     };
-
     var calculateOvernightFullRegistrationFees = function() {
       /*
 	* calculate overnight full registration fees
@@ -386,7 +406,6 @@
       }
       return registrationFee;   
     };
-
     var calculateOvernightPartialRegistrationFees = function() {
       /*
 	* calculate overnight partial registration fees
@@ -405,7 +424,6 @@
       }
       return registrationFee;
     };
-
     var calculateOvernightRegistrationFees = function() {
       var overnightAttendingChoice = determineOvernightAttendingChoice();
       var registrationFees;
@@ -421,10 +439,10 @@
       };
       return registrationFees;
     };
-
     var updateOvernightRegistrationFeesField = function() {
       var registrationFees = calculateOvernightRegistrationFees();
-      jQuery(overnightFirstChoiceFeesSubtotal).val(registrationFees);
+      var registrationFeesFixed = registrationFees.toFixed(2).replace(".00","")
+      jQuery(overnightFirstChoiceFeesSubtotal).val(registrationFeesFixed);
       jQuery(overnightFirstChoiceFeesSubtotal).attr("readonly", true);
       jQuery(overnightFirstChoiceFeesSubtotal).change();
     };
@@ -437,23 +455,35 @@
        * Update the total fees due field with appropriate value
        * return null
        */
+      console.log("Updating total fees from above");
       var attendanceType = getCommuterOrOvernight();
+      console.log("attendance type: " + attendanceType);
+      //console.log("typeof: " + typeof(attendanceType));
       var totalFeesDue;
+      var totalFeesDueFormatted; // For dollar formatting
       switch (attendanceType) {
 	case 'commuter':
 	  // commuter fees
-	  totalFeesDue = jQuery(commuterFeesSubTotal).val();
+	  console.log('inside commuter case');
+	  totalFeesDue = parseFloat(jQuery(commuterFeesSubTotal).val());
 	  break;
 	case 'overnight':
+	  console.log('inside overnight case');
 	  // first choice registration fees
-	  totalFeesDue = jQuery(overnightFirstChoiceFeesSubtotal).val();
+	  totalFeesDue = parseFloat(jQuery(overnightFirstChoiceFeesSubtotal).val());
 	  break;
 	default:
-	  // null
-	  totalFeesDue = null;
+	  // zero
+	  console.log("Error: No commuter or overnight selection detected.");
+	  totalFeesDue = undefined;
+      };
+      // Make sure total fees due is defined, and is a number
+      if (isNumber(totalFeesDue)) {
+	totalFeesDueFormatted = dollarFormat(totalFeesDue);
+	jQuery(totalFeesFromAbove).val(totalFeesDueFormatted);
+	jQuery(totalFeesFromAbove).change();
+	jQuery(totalFeesFromAbove).attr("readonly", true);
       }
-      jQuery(totalFeesFromAbove).val(totalFeesDue);
-      jQuery(totalFeesFromAbove).change();
     };
     var determineDiscountStatus = function() {
       /*
@@ -494,34 +524,51 @@
       /*
        * Calculate the discount price
        * based on Total Fees From Above field and discount percent
+       * return number
        */
-      var subtotal = parseInt(jQuery(totalFeesFromAbove).val());
-      var discountPrice = (subtotal * discount).toFixed(2);
-      return discountPrice;
+      var subtotal = parseFloat(jQuery(totalFeesFromAbove).val());
+      var discountPrice = subtotal * discount;
+      return (isNumber(discountPrice)) ? discountPrice : 0;
     };
     var updateEarlyDiscountField = function() {
+      /*
+       * Update early discount field
+       * with dollar formatted value
+       */
       var discountPrice = calculateEarlyDiscount();
-      jQuery(discountField).val(discountPrice);
+      var discountPriceFormatted = dollarFormat(discountPrice);
+      jQuery(discountField).val(discountPriceFormatted);
       jQuery(discountField).change();
       jQuery(discountField).attr("readonly", true);
-      
     };
     var calculateLateFee = function() {
       /*
        * Calculate the late fee price
        * based on Total Fees From Above field and late fee percent
+       * return number
        */
-      var subtotal = parseInt(jQuery(totalFeesFromAbove).val(), 10);
-      var lateFeePrice = (subtotal * lateFee).toFixed(2);
-      return lateFeePrice;
+      var subtotal = parseFloat(jQuery(totalFeesFromAbove).val(), 10);
+      var lateFeePrice = (subtotal * lateFee);
+      return (isNumber(lateFeePrice)) ? lateFeePrice : null;
     };
     var updateLateFeeField = function() {
+      /*
+       * Update the late fee field
+       * Value should be formatted for dollars
+       */
       var lateFeePrice = calculateLateFee();
-      jQuery(lateFeeField).val(lateFeePrice);
+      var lateFeePriceFormatted = dollarFormat(lateFeePrice);
+      jQuery(lateFeeField).val(lateFeePriceFormatted);
       jQuery(lateFeeField).change();
       jQuery(lateFeeField).attr("readonly", true);
     };
     var calculateRegistrationFees = function() {
+      /*
+       * Calculate registration fees
+       * based on subtotal
+       * apply discount or late fee if applicable
+       * return number
+       */
       var registrationFees;
       var subtotal = parseInt(jQuery(totalFeesFromAbove).val(), 10);
       var discountStatus = determineDiscountStatus();
@@ -538,11 +585,16 @@
 	  registrationFees = subtotal + lateFee;
 	  break;
       }
-      return registrationFees;
+      return (isNumber(registrationFees)) ? registrationFees : 0;
     };
     var updateRegistrationFeesField = function() {
+      /*
+       * Update registration fees field
+       * with dollar formatted value
+       */
       var registrationFees = calculateRegistrationFees();
-      jQuery(registrationFeesField).val(registrationFees);
+      var registrationFeesFormatted = dollarFormat(registrationFees);
+      jQuery(registrationFeesField).val(registrationFeesFormatted);
       jQuery(registrationFeesField).change();
       jQuery(registrationFeesField).attr("readonly", true);
     }
@@ -556,34 +608,48 @@
       var financialAidValue = parseFloat(jQuery(financialAidField).val());
       var registrationFeesValue = parseFloat(jQuery(registrationFeesField).val());
       // Make sure the donation and financial aid values are numeric
-      var donation = (isNaN(donationValue) || typeof(donationValue) === "string") ? 0 : donationValue;
-      var financialAid = (isNaN(financialAidValue) || typeof(financialAidValue) === "string") ? 0 : financialAidValue;
-      var registrationFees = (isNaN(registrationFeesValue) || typeof(registrationFeesValue) === "string") ? 0 : registrationFeesValue;
+      var donation = (isNumber(donationValue)) ? donationValue : 0;
+      var financialAid = (isNumber(financialAidValue)) ? financialAidValue : 0;
+      var registrationFees = (isNumber(registrationFeesValue)) ? registrationFeesValue : 0;
+      // Calculate total
+      var totalFeesDue = registrationFees + donation - financialAid;
       
-      var totalFeesDue = registrationFees + donationValue - financialAid;
-      if (isNaN(totalFeesDue)) {
-	return null;
-      } else {
-	return totalFeesDue;
-      }
+      return (isNumber(totalFeesDue)) ? totalFeesDue : 0;
     };
     var updateTotalFeesDueField = function() {
+      /*
+       * Update the total fees due field
+       * with dollar formatted value
+       */
       var totalFeesDue = calculateTotalFeesDue();
-      jQuery(totalFeesDueField).val(totalFeesDue);
+      var totalFeesDueFormatted = dollarFormat(totalFeesDue);
+      jQuery(totalFeesDueField).val(totalFeesDueFormatted);
       jQuery(totalFeesDueField).change();
       jQuery(totalFeesDueField).attr("readonly", true);
     };
     
     var calculateBalanceDueOnArrival = function() {
+      /*
+       * Calculate balance due on arrival
+       * based on total fees due and amount enclosed
+       * if the value can't be calculated return zero
+       * return number
+       */
       var totalFeesDue = calculateTotalFeesDue();
       var amountEnclosedValue = parseFloat(jQuery(amountEnclosedField).val());
-      var amountEnclosed = (isNaN(amountEnclosedValue) || typeof(amountEnclosedValue) === "string") ? 0 : amountEnclosedValue;
+      //Make sure amount enclosed value is a number
+      var amountEnclosed = (isNumber(amountEnclosedValue)) ? amountEnclosedValue : 0;
       var amountDue = totalFeesDue - amountEnclosed;
-      return amountDue;
+      return (isNumber(amountDue)) ? amountDue : 0; 
     };
     var updateBalanceDueOnArrivalField = function() {
+      /*
+       * Update the balance due on arrival field
+       * with dollar formatted value
+       */
       var balanceDueOnArrival = calculateBalanceDueOnArrival();
-      jQuery(balanceDueOnArrivalField).val(balanceDueOnArrival);
+      var balanceDueOnArrivalFormatted = dollarFormat(balanceDueOnArrival);
+      jQuery(balanceDueOnArrivalField).val(balanceDueOnArrivalFormatted);
       jQuery(balanceDueOnArrivalField).change();
       jQuery(balanceDueOnArrivalField).attr("readonly", true);
     }
@@ -591,13 +657,13 @@
 /*
  * Events, etc..
  */
-    var attachEvents = function() {
+    var attachEvents = function() {      
       // Age events
       jQuery(ageAtAnnualSession).keyup(updateAgeGroupSelect);
       
       // Day checkbox events
       for (var i=0;i < days.length;i++) {
-      jQuery(days[i]).click(updateCommuterAmountOfDaysField);
+	jQuery(days[i]).click(updateCommuterAmountOfDaysField);
       }
       // Commuter SubTotal field update triggers
       jQuery(commuterAmountOfDays).change(updateCommuterFeesSubTotalField);
@@ -643,8 +709,11 @@
       
       // Calculate balance due on arrival
       jQuery(amountEnclosedField).keyup(updateBalanceDueOnArrivalField);
-      
+      // donationField.change()
+      // financialAidField.change()
+      // totalFeesDueField.change()
+
     };
-    jQuery(document).load(attachEvents());
-    jQuery(document).load(setDiscountStatusSelector());
-    
+    attachEvents();
+    setDiscountStatusSelector();
+});
