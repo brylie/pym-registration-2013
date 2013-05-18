@@ -684,6 +684,7 @@ jQuery(document).ready( function() {
 
       // Overnight fees field update
       jQuery(overnightFirstChoiceSelect).click(updateOvernightRegistrationFeesField);
+      jQuery(overnightFirstChoiceSelect).change(updateOvernightRegistrationFeesField);
       jQuery(overnightAttendingFull).click(updateOvernightRegistrationFeesField);
       jQuery(overnightAttendingPartial).click(updateOvernightRegistrationFeesField);
       jQuery(overnightPartialSessionAmountOfDays).change(updateOvernightRegistrationFeesField);
